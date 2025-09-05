@@ -7,7 +7,6 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          <Route path='/' element={<Write/>}/>
           <Route path='/Write' element={<Write/>}/>
           <Route path='/Read' element={<Read/>}/>
         </Routes>
