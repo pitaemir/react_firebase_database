@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import  app  from '../firebaseConfig'
 import { getDatabase, ref, onValue, set } from 'firebase/database'
+import { Link } from 'react-router-dom'
 
 function Write() {
   const [controlState, setControlState] = useState(false)
@@ -12,12 +13,6 @@ function Write() {
   const [second, setSecond] = useState(null)
   const db = getDatabase(app)
   const controlRef = ref(db, 'test/control')
-  const dayRef = ref(db, 'test/day')
-  const monthRef = ref(db, 'test/month')
-  const yearRef = ref(db, 'test/year')
-  const hourRef = ref(db, 'test/hour')
-  const minuteRef = ref(db, 'test/minute')
-  const secondRef = ref(db, 'test/second')
 
   // Lê o valor atual ao carregar o componente
   useEffect(() => {
@@ -27,32 +22,7 @@ function Write() {
         setControlState(value)
       }
     })
-    onValue(dayRef, (snapshot) => {
-      const value = snapshot.val()
-      setDay(value)
-    })
-    onValue(monthRef, (snapshot) => {
-      const value = snapshot.val()
-      setMonth(value)
-    })
-    onValue(yearRef, (snapshot) => {
-      const value = snapshot.val()
-      setYear(value)
-    })
-    onValue(hourRef, (snapshot) => {
-      const value = snapshot.val()
-      setHour(value)
-    })
-    onValue(minuteRef, (snapshot) => {
-      const value = snapshot.val()
-      setMinute(value)
-    })
-    onValue(secondRef, (snapshot) => {
-      const value = snapshot.val()
-      setSecond(value)
-    })
 
-    // Limpa o listener ao desmontar o componente
 
     return () => unsubscribe()
   }, [])
@@ -85,47 +55,129 @@ function Write() {
   }
 
   return (
-    <div>
-      <h1>Controle Remoto</h1>
-      <p>Status atual: <strong>{controlState ? 'ON (true)' : 'OFF (false)'}</strong></p>
-      <button onClick={toggleControl}>
-        {controlState ? 'Desligar (Setar False)' : 'Ligar (Setar True)'}
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      marginTop: '40px',
+      fontFamily: 'Arial, sans-serif',
+      backgroundColor: 'white',
+      minHeight: '100vh',
+      paddingBottom: '40px'
+    }}>
+      {/* Botão Voltar */}
+      <Link to="/" style={{ textDecoration: 'none' }}>
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          left: '20px',
+          zIndex: 1000
+        }}>
+          <button
+            style={{
+              padding: '8px 16px',
+              fontSize: '14px',
+              backgroundColor: '#ffffff',
+              color: '#0053A0',
+              border: '2px solid #0053A0',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              boxShadow: '0px 2px 6px rgba(0,0,0,0.1)'
+            }}
+          >
+            ⬅️ Voltar
+          </button>
+        </div>
+      </Link>
+
+      {/* Título e Status */}
+      <h1 style={{ marginBottom: '10px', color: '#0053A0' }}>
+        ⚙️ Controle Remoto da Horta
+      </h1>
+      <p style={{ marginBottom: '20px', fontSize: '16px' }}>
+        Status atual da válvula:
+        <strong style={{ marginLeft: '10px', color: controlState ? '#27ae60' : '#e74c3c' }}>
+          {controlState ? 'Ligada' : 'Desligada'}
+        </strong>
+      </p>
+
+      {/* Botão Liga/Desliga */}
+      <button
+        onClick={toggleControl}
+        style={{
+          padding: '10px 25px',
+          fontSize: '16px',
+          backgroundColor: controlState ? '#e74c3c' : '#0053A0',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          marginBottom: '30px',
+          boxShadow: '0px 4px 6px rgba(0,0,0,0.1)'
+        }}
+      >
+        {controlState ? 'Desligar Válvula' : 'Ligar Válvula'}
       </button>
-      <form onSubmit={updateValue}>
-        <label>
-          Dia:
-          <input type="number" value={day} onChange={(e) => setDay(e.target.value)} />
-        </label><br />
 
-        <label>
-          Mês:
-          <input type="number" value={month} onChange={(e) => setMonth(e.target.value)} />
-        </label><br />
+      {/* Formulário Data e Hora */}
+      <form onSubmit={updateValue} style={{
+        backgroundColor: '#f9f9f9',
+        padding: '30px',
+        borderRadius: '12px',
+        boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
+        width: '320px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px'
+      }}>
+        <h3 style={{ marginBottom: '5px', color: '#003B70' }}>🗓️ Definir Data e Hora</h3>
 
-        <label>
-          Ano:
-          <input type="number" value={year} onChange={(e) => setYear(e.target.value)} />
-        </label><br />
+        {[
+          { label: 'Dia', value: day, set: setDay },
+          { label: 'Mês', value: month, set: setMonth },
+          { label: 'Ano', value: year, set: setYear },
+          { label: 'Hora', value: hour, set: setHour },
+          { label: 'Minuto', value: minute, set: setMinute },
+          { label: 'Segundo', value: second, set: setSecond }
+        ].map(({ label, value, set }, idx) => (
+          <div key={idx} style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <label style={{ flex: 1 }}>{label}:</label>
+            <input
+              type="number"
+              value={value}
+              onChange={(e) => set(e.target.value)}
+              style={{
+                flex: 1.2,
+                padding: '6px 8px',
+                borderRadius: '6px',
+                border: '1px solid #ccc'
+              }}
+            />
+          </div>
+        ))}
 
-        <label>
-          Hora:
-          <input type="number" value={hour} onChange={(e) => setHour(e.target.value)} />
-        </label><br />
-
-        <label>
-          Minuto:
-          <input type="number" value={minute} onChange={(e) => setMinute(e.target.value)} />
-        </label><br />
-
-        <label>
-          Segundo:
-          <input type="number" value={second} onChange={(e) => setSecond(e.target.value)} />
-        </label><br />
-
-        <button type="submit">Salvar Dados</button>
-      </form>    
-      </div>
-    
+        {/* Botão Salvar */}
+        <button
+          type="submit"
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: '#FFC700',
+            color: '#003B70',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            marginTop: '15px'
+          }}
+        >
+          💾 Salvar Dados
+        </button>
+      </form>
+    </div>
   )
 }
 
