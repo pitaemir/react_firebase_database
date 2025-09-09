@@ -11,6 +11,7 @@ function Write() {
   const [hour, setHour] = useState(null)
   const [minute, setMinute] = useState(null)
   const [second, setSecond] = useState(null)
+  const [cycle, setCycle] = useState(1) // valor padrão: diário
   const db = getDatabase(app)
   const controlRef = ref(db, 'test/control')
 
@@ -47,6 +48,7 @@ function Write() {
       await set(ref(db, 'test/hour'), Number(hour))
       await set(ref(db, 'test/minute'), Number(minute))
       await set(ref(db, 'test/second'), Number(second))
+      await set(ref(db, 'test/cycle'), Number(cycle))
 
       alert('Acionamneto definido com sucesso!')
     } catch (error) {
@@ -159,6 +161,27 @@ function Write() {
             />
           </div>
         ))}
+<div style={{
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center'
+}}>
+  <label style={{ flex: 1 }}>Ciclo:</label>
+  <select
+    value={cycle}
+    onChange={(e) => setCycle(e.target.value)}
+    style={{
+      flex: 1.2,
+      padding: '6px 8px',
+      borderRadius: '6px',
+      border: '1px solid #ccc'
+    }}
+  >
+    <option value={1}>Diário</option>
+    <option value={2}>Semanal</option>
+    <option value={3}>Mensal</option>
+  </select>
+</div>
 
         {/* Botão Salvar */}
         <button
@@ -174,7 +197,7 @@ function Write() {
             marginTop: '15px'
           }}
         >
-          💾 Salvar Dados
+          💾 Salvar
         </button>
       </form>
     </div>

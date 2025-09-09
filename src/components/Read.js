@@ -1,17 +1,46 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import app from '../firebaseConfig'
-import { getDatabase, ref, get } from 'firebase/database'
+import { getDatabase, ref, get, onValue } from 'firebase/database'
 import { Link } from 'react-router-dom'
 
 function Read() {
   const [data, setData] = useState(null)
+  const [temperature, setTemperature] = useState(null)
+  const [pressure, setPressure] = useState(null)
 
+  const db = getDatabase(app)
+
+  // Lê automaticamente temperatura e pressão ao carregar
+  useEffect(() => {
+    const tempRef = ref(db, 'test/temperature')
+    const pressRef = ref(db, 'test/pressure')
+
+    const unsubscribeTemp = onValue(tempRef, (snapshot) => {
+      const value = snapshot.val()
+      if (typeof value === 'number') {
+        setTemperature(value)
+      }
+    })
+
+    const unsubscribePress = onValue(pressRef, (snapshot) => {
+      const value = snapshot.val()
+      if (typeof value === 'number') {
+        setPressure(value)
+      }
+    })
+
+    return () => {
+      unsubscribeTemp()
+      unsubscribePress()
+    }
+  }, [db])
+
+  // Busca os demais dados (data/hora e válvula)
   const fetchData = async () => {
-    const db = getDatabase(app)
     const dataRef = ref(db, 'test')
     const snapshot = await get(dataRef)
     if (snapshot.exists()) {
-      setData(snapshot.val())  // aqui mantemos o objeto com as chaves
+      setData(snapshot.val())
       console.log(snapshot.val())
     } else {
       console.log('No data available')
@@ -20,7 +49,7 @@ function Read() {
   }
 
   return (
-<div style={{
+    <div style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -56,9 +85,9 @@ function Read() {
       </Link>
 
       {/* Título e instrução */}
-      <h1 style={{ marginBottom: '10px', color: '#0053A0' }}>Leitura de Dados da Horta</h1>
+      <h1 style={{ marginBottom: '10px', color: '#0053A0' }}>Leitura da última definição de acionamento</h1>
       <p style={{ marginBottom: '20px', fontSize: '16px', color: '#2d3436' }}>
-        Clique no botão abaixo para buscar os dados do Banco de dados.
+        Clique no botão abaixo para verificar.
       </p>
 
       {/* Botão Buscar */}
@@ -77,31 +106,46 @@ function Read() {
           fontWeight: 'bold'
         }}
       >
-        Buscar Dados
+        Buscar última definição
       </button>
 
-      {/* Dados carregados */}
-      {data && (
-        <div style={{
-          backgroundColor: '#f9f9f9',
-          padding: '30px',
-          borderRadius: '12px',
-          boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
-          width: '320px',
-          textAlign: 'left',
-          color: '#2d3436'
-        }}>
-          <p><strong>Data:</strong> {data.day}/{data.month}/{data.year}</p>
-          <p><strong>Hora:</strong> {data.hour}:{data.minute}:{data.second}</p>
-          <p><strong>Temperatura:</strong> {data.temperature} °C</p>
-          <p><strong>Pressão:</strong> {data.pressure} hPa</p>
-          <p><strong>Válvula:</strong> 
-            <span style={{ marginLeft: '5px', color: data.control ? '#27ae60' : '#e74c3c' }}>
-              {data.control ? 'Ligada' : 'Desligada'}
-            </span>
-          </p>
-        </div>
-      )}
+      {/* Bloco de exibição */}
+      <div style={{
+        backgroundColor: '#f9f9f9',
+        padding: '30px',
+        borderRadius: '12px',
+        boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.1)',
+        width: '320px',
+        textAlign: 'left',
+        color: '#2d3436'
+      }}>
+        {/* SEMPRE EXIBIR temperatura e pressão */}
+        <p><strong>Temperatura:</strong> {temperature !== null ? `${temperature} °C` : 'Carregando...'}</p>
+        <p><strong>Pressão:</strong> {pressure !== null ? `${pressure} hPa` : 'Carregando...'}</p>
+
+        {/* EXIBE APÓS CLICAR EM "Buscar" */}
+        {data && (
+          <>
+            <p><strong>Data:</strong> 
+              {String(data.day).padStart(2, '0')}/
+              {String(data.month).padStart(2, '0')}/
+              {data.year}
+            </p>
+
+            <p><strong>Hora:</strong> 
+              {String(data.hour).padStart(2, '0')}:
+              {String(data.minute).padStart(2, '0')}:
+              {String(data.second).padStart(2, '0')}
+            </p>
+
+            <p><strong>Válvula:</strong> 
+              <span style={{ marginLeft: '5px', color: data.control ? '#27ae60' : '#e74c3c' }}>
+                {data.control ? 'Ligada' : 'Desligada'}
+              </span>
+            </p>
+          </>
+        )}
+      </div>
     </div>
   )
 }
