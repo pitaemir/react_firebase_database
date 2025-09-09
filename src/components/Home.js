@@ -12,7 +12,7 @@ function Home() {
       padding: '20px'
     }}>
       <h1 style={{ color: '#005aa7', fontSize: '32px', marginBottom: '10px' }}>
-        🌱 Bem-vindo à Horta Escolar do Sesc
+        Bem-vindo à Horta Escolar do SESC
       </h1>
 
       <p style={{ fontSize: '18px', color: '#333' }}>
