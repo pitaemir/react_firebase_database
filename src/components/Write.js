@@ -25,7 +25,7 @@ function Write() {
 
 
     return () => unsubscribe()
-  }, [])
+  }, [controlRef])
 
   // Alterna o valor atual (toggle)
   const toggleControl = async () => {
@@ -48,7 +48,7 @@ function Write() {
       await set(ref(db, 'test/minute'), Number(minute))
       await set(ref(db, 'test/second'), Number(second))
 
-      alert('Dados atualizados com sucesso!')
+      alert('Acionamneto definido com sucesso!')
     } catch (error) {
       console.error('Erro ao salvar dados:', error)
     }
@@ -130,7 +130,7 @@ function Write() {
         flexDirection: 'column',
         gap: '15px'
       }}>
-        <h3 style={{ marginBottom: '5px', color: '#003B70' }}>🗓️ Definir Data e Hora</h3>
+        <h3 style={{ marginBottom: '5px', color: '#003B70' }}>Definir acionamento</h3>
 
         {[
           { label: 'Dia', value: day, set: setDay },

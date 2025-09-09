@@ -22,24 +22,24 @@ function Home() {
       <div style={{ marginTop: '40px' }}>
         <Link to="/read">
           <button style={{
-            backgroundColor: '#005aa7',
-            color: '#fff',
-            border: 'none',
-            padding: '12px 28px',
-            borderRadius: '8px',
-            fontSize: '16px',
-            margin: '10px',
-            cursor: 'pointer',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-          }}>
+              backgroundColor: '#ffcc00',
+              color: '#000',
+              border: 'none',
+              padding: '12px 28px',
+              borderRadius: '8px',
+              fontSize: '16px',
+              margin: '10px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+            }}>
             📖 Ler Dados
           </button>
         </Link>
 
         <Link to="/write">
           <button style={{
-            backgroundColor: '#ffcc00',
-            color: '#000',
+            backgroundColor: '#005aa7',
+            color: '#fff',
             border: 'none',
             padding: '12px 28px',
             borderRadius: '8px',

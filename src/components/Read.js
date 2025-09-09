@@ -56,9 +56,9 @@ function Read() {
       </Link>
 
       {/* Título e instrução */}
-      <h1 style={{ marginBottom: '10px', color: '#0053A0' }}>🌾 Leitura de Dados da Horta</h1>
+      <h1 style={{ marginBottom: '10px', color: '#0053A0' }}>Leitura de Dados da Horta</h1>
       <p style={{ marginBottom: '20px', fontSize: '16px', color: '#2d3436' }}>
-        Clique no botão abaixo para buscar os dados do Firebase.
+        Clique no botão abaixo para buscar os dados do Banco de dados.
       </p>
 
       {/* Botão Buscar */}
@@ -77,7 +77,7 @@ function Read() {
           fontWeight: 'bold'
         }}
       >
-        🔄 Buscar Dados
+        Buscar Dados
       </button>
 
       {/* Dados carregados */}
@@ -91,11 +91,11 @@ function Read() {
           textAlign: 'left',
           color: '#2d3436'
         }}>
-          <p><strong>📅 Data:</strong> {data.day}/{data.month}/{data.year}</p>
-          <p><strong>⏰ Hora:</strong> {data.hour}:{data.minute}:{data.second}</p>
-          <p><strong>🌡️ Temperatura:</strong> {data.temperature} °C</p>
-          <p><strong>🌬️ Pressão:</strong> {data.pressure} hPa</p>
-          <p><strong>💧 Válvula:</strong> 
+          <p><strong>Data:</strong> {data.day}/{data.month}/{data.year}</p>
+          <p><strong>Hora:</strong> {data.hour}:{data.minute}:{data.second}</p>
+          <p><strong>Temperatura:</strong> {data.temperature} °C</p>
+          <p><strong>Pressão:</strong> {data.pressure} hPa</p>
+          <p><strong>Válvula:</strong> 
             <span style={{ marginLeft: '5px', color: data.control ? '#27ae60' : '#e74c3c' }}>
               {data.control ? 'Ligada' : 'Desligada'}
             </span>
