@@ -7,6 +7,8 @@ function Read() {
   const [data, setData] = useState(null);
   const [temperature, setTemperature] = useState(null);
   const [pressure, setPressure] = useState(null);
+  const [flowRate, setFlowRate] = useState(null);
+  const [totalMilliliters, setTotalMilliLitres] = useState(null);
 
   const db = getDatabase(app);
 
@@ -14,24 +16,34 @@ function Read() {
   useEffect(() => {
     const tempRef = ref(db, "test/temperature");
     const pressRef = ref(db, "test/pressure");
+    const flowRef = ref(db, "test/flowRate");
+    const totalRef = ref(db, "test/totalMilliliters");
 
     const unsubscribeTemp = onValue(tempRef, (snapshot) => {
       const value = snapshot.val();
-      if (typeof value === "number") {
-        setTemperature(value);
-      }
+      if (typeof value === "number")  setTemperature(value);
+      
     });
 
     const unsubscribePress = onValue(pressRef, (snapshot) => {
       const value = snapshot.val();
-      if (typeof value === "number") {
-        setPressure(value);
-      }
+      if (typeof value === "number") setPressure(value);
+      
+    });
+    const unsubscribeFlow = onValue(flowRef, (snapshot) => {
+      const value = snapshot.val();
+      if (typeof value === "number") setFlowRate(value);
     });
 
+    const unsubscribeTotal = onValue(totalRef, (snapshot) => {
+      const value = snapshot.val();
+      if (typeof value === "number") setTotalMilliLitres(value);
+    });
     return () => {
       unsubscribeTemp();
       unsubscribePress();
+      unsubscribeFlow();
+      unsubscribeTotal();
     };
   }, [db]);
 
@@ -135,6 +147,14 @@ function Read() {
         <p>
           <strong>Pressão:</strong>{" "}
           {pressure !== null ? `${pressure} hPa` : "Carregando..."}
+        </p>
+        <p>
+          <strong>Vazão:</strong>{" "}
+          {flowRate !== null ? `${flowRate.toFixed(2)} L/min` : "Carregando..."}
+        </p>
+        <p>
+          <strong>Total:</strong>{" "}
+          {totalMilliliters !== null ? `${totalMilliliters} mL` : "Carregando..."}
         </p>
 
         {/* EXIBE APÓS CLICAR EM "Buscar" */}
